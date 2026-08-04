@@ -1,5 +1,7 @@
 # Data Layer Analysis: RunWithYou
 
+> **NOTA (5 Agustus 2026):** Integrasi Huawei Health Kit (HMS) telah **dihapus** dari kode. Bagian 2.3 (`HuaweiHealthService`) dan referensi HMS lain di dokumen ini bersifat historis dan tidak berlaku lagi. Data kesehatan hanya dari Google Health Connect (data Huawei Band masuk lewat bridge "Health Sync").
+
 ## 1. Models
 
 ### 1.1 TaskModel (`lib/models/task.dart`)

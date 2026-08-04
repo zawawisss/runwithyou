@@ -19,7 +19,7 @@ Full project spec: [`docs/alur.md`](docs/alur.md)
 - **Charts:** fl_chart
 - **HTTP:** Dio
 - **Routing:** go_router
-- **Health integration:** Huawei Health Kit (coming soon)
+- **Health integration:** Google Health Connect (via `health` package); Huawei Band data via "Health Sync" bridge app
 - **AI backend:** OpenRouter (coming soon)
 
 ## Project structure
@@ -38,7 +38,7 @@ lib/
 ├── widgets/                     # Reusable components
 ├── models/                      # Data models
 ├── providers/                   # Riverpod providers
-└── services/                    # API, Huawei Health, AI
+└── services/                    # API (NVIDIA/AI), Health Connect
 ```
 
 ## Design constraints

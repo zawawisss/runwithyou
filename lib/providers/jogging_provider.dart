@@ -5,7 +5,6 @@ import '../models/workout.dart';
 import 'workout_provider.dart';
 import 'metrics_provider.dart';
 import '../services/health_service.dart';
-import '../services/huawei_health_service.dart';
 
 class JoggingSessionState {
   final bool isActive;
@@ -90,10 +89,8 @@ class JoggingNotifier extends Notifier<JoggingSessionState> {
           currentPace: newPace,
         );
 
-        // Periodically sync real heart rate & calories (every 30 seconds).
-        // Huawei Band dibaca langsung via HMS Health Kit (readLatestData) saat
-        // terhubung; Health Connect hanya fallback. 30s keseimbangan yang baik
-        // antara responsivitas UI dan konsumsi baterai.
+        // Periodically sync latest heart rate & calories (every 30 seconds).
+        // 30s = keseimbangan antara responsivitas UI dan konsumsi baterai.
         _syncTickCount++;
         if (_syncTickCount >= 30) {
           _syncTickCount = 0;
@@ -109,13 +106,10 @@ class JoggingNotifier extends Notifier<JoggingSessionState> {
     try {
       final now = DateTime.now();
       
-      // 1. Latest Heart Rate — Huawei Band primer bila terhubung, fallback ke
-      //    Health Connect (Google). Band tidak menulis ke Health Connect secara
-      //    native, jadi jalur Huawei penting untuk HR real-time saat jogging.
-      final huaweiHR = HuaweiHealthService.isSignedIn
-          ? await HuaweiHealthService.fetchLatestHeartRate()
-          : null;
-      final latestHR = huaweiHR ?? await HealthService.fetchLatestHeartRate();
+      // 1. Latest Heart Rate dari Health Connect. Data Huawei Band masuk lewat
+      //    bridge "Health Sync" (Huawei Health → Health Connect), jadi nilainya
+      //    mengikuti ritme sinkron bridge, bukan streaming real-time.
+      final latestHR = await HealthService.fetchLatestHeartRate();
       
       // 2. Fetch active calories burned during this session
       final activeCalories = await HealthService.fetchCaloriesInInterval(_sessionStartTime!, now);

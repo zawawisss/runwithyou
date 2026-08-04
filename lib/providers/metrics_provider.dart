@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/daily_metrics.dart';
 import '../services/hive_service.dart';
 import '../services/health_service.dart';
-import '../services/huawei_health_service.dart';
 
 class MetricsNotifier extends Notifier<DailyMetricsModel> {
   Timer? _autoSyncTimer;
@@ -29,13 +28,9 @@ class MetricsNotifier extends Notifier<DailyMetricsModel> {
 
   Future<void> _trySyncFromHealth() async {
     try {
-      // Huawei primer bila terhubung, fallback ke Health Connect (Google).
-      // App Huawei Health tidak menulis ke Health Connect secara native, jadi
-      // tanpa jalur Huawei ini data Huawei Band tidak akan pernah masuk ke app.
-      var metrics = HuaweiHealthService.isSignedIn
-          ? await HuaweiHealthService.fetchTodayMetrics()
-          : null;
-      metrics ??= await HealthService.fetchTodayMetrics();
+      // Sumber data: Google Health Connect. Data Huawei Band masuk lewat bridge
+      // "Health Sync" (Huawei Health → Health Connect) di HP, lalu dibaca di sini.
+      final metrics = await HealthService.fetchTodayMetrics();
 
       if (metrics != null) {
         state = metrics;

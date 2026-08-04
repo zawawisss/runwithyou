@@ -432,14 +432,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
-  huawei_health:
-    dependency: "direct main"
-    description:
-      name: huawei_health
-      sha256: "87949d33fa47553cf4ecaf88d252c13845668469256474c87d3b6ee4b334e620"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.17.0+300"
   intl:
     dependency: transitive
     description:

@@ -4,6 +4,8 @@
 **Metode:** 6 sub-agent paralel (structure, architecture, state management, Hive, UI, services)
 **Total file Dart:** 28 | **Total baris:** 7.577
 
+> **NOTA (5 Agustus 2026):** Integrasi Huawei Health Kit (HMS) telah **dihapus** dari kode. Semua referensi `HuaweiHealthService`, `huawei_health_provider`, dan HMS Health Kit di bawah ini bersifat historis (audit ditulis 31 Juli 2026) dan tidak lagi berlaku. Data kesehatan sekarang hanya dari Google Health Connect; data Huawei Band masuk lewat bridge pihak ketiga "Health Sync".
+
 ---
 
 ## Daftar Isi

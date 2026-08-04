@@ -7,24 +7,6 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Plugin gradle AGC (AppGallery Connect) diaktifkan HANYA jika agconnect-services.json
-// tersedia (file dihasilkan dari konsol AGC — lihat docs/huawei_setup.md). Classpath
-// plugin ikut dimuat hanya saat file ada, jadi build tetap hijau tanpa konfigurasi HMS.
-// Catatan: agcp tidak tersedia sebagai marker plugins-DSL (hanya via classpath).
-if (project.file("agconnect-services.json").exists()) {
-    buildscript {
-        repositories {
-            google()
-            mavenCentral()
-            maven { url = uri("https://developer.huawei.com/repo/") }
-        }
-        dependencies {
-            classpath("com.huawei.agconnect:agcp:1.9.6.300")
-        }
-    }
-    apply(plugin = "com.huawei.agconnect")
-}
-
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
@@ -62,8 +44,6 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
-            // Keep rules HMS/Gson (jaring pengaman; plugin huawei_health juga membawa
-            // consumerProguardFiles). Dipakai saat R8/minify diaktifkan di rilis.
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -81,5 +61,4 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-    implementation("com.huawei.hms:health:9.4.0+300")
 }

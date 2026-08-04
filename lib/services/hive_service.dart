@@ -293,20 +293,6 @@ class HiveService {
     return box.get('nvidia_api_key') as String?;
   }
 
-  // --- HUAWEI HEALTH OPT-OUT ---
-  // Plugin huawei_health tidak punya API sign-out, jadi flag ini menyatakan
-  // bahwa user memilih "Putuskan Koneksi" — app berhenti memakai jalur Huawei
-  // sampai user connect ulang secara eksplisit.
-  static Future<void> setHuaweiOptOut(bool value) async {
-    final box = Hive.box(_settingsBoxName);
-    await box.put('huawei_opt_out', value);
-  }
-
-  static bool getHuaweiOptOut() {
-    final box = Hive.box(_settingsBoxName);
-    return box.get('huawei_opt_out') ?? false;
-  }
-
   // --- DIAGNOSTICS LOGS ---
   static Future<void> saveDiagnosticsLog(String log) async {
     final box = Hive.box(_settingsBoxName);

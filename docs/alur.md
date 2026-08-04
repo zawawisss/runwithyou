@@ -20,15 +20,16 @@ Energy level hari ini
 2. Jogging Tracker
 
 One-tap "Mulai Jogging"
-Real-time tracking (jarak, pace, waktu, heart rate dari Huawei Watch)
+Real-time tracking (jarak, pace, waktu, heart rate via Health Connect)
 Auto pause/resume
 Voice feedback
 Save workout otomatis
 
-3. Huawei Watch Integration
+3. Health Connect Integration
 
-Sync data via Huawei Health Kit (langkah, HR, sleep, workout, SpO2)
-Real-time heart rate (kalau memungkinkan)
+Sync data via Google Health Connect (langkah, HR, sleep, workout)
+Data Huawei Band masuk lewat bridge pihak ketiga "Health Sync" (Huawei Health → Health Connect)
+Real-time heart rate (kalau memungkinkan; via bridge sifatnya mengikuti ritme sinkron, bukan streaming)
 
 4. Task Manager
 
@@ -60,7 +61,7 @@ Teknologi Stack
 Framework: Flutter (Android focus dulu)
 State Management: Riverpod
 Backend AI: OpenRouter (Google Gemini / Llama / dll)
-Health Integration: Huawei Health Kit (huawei_health)
+Health Integration: Google Health Connect (health) — Huawei Band via "Health Sync" bridge
 Database Lokal: Hive atau Isar
 Charts: fl_chart
 HTTP Client: Dio
@@ -81,9 +82,9 @@ Style: Feminine, clean, calming, sporty
 
 Instruksi untuk AI Agent / Developer
 
-Mulai dengan setup project Flutter + Huawei Health Kit integration.
+Mulai dengan setup project Flutter + Google Health Connect integration.
 Buat UI yang cantik, feminine, dan mudah digunakan.
-Prioritaskan fitur MVP: Dashboard → Jogging Tracker → Huawei Sync → Task Manager.
+Prioritaskan fitur MVP: Dashboard → Jogging Tracker → Health Sync → Task Manager.
 AI features harus ramah, suportif, dan memahami jadwal guru yang sibuk.
 Selalu prioritaskan simplicity dan emotional support.
 
@@ -92,7 +93,7 @@ Catatan Tambahan
 
 Aplikasi ini adalah project spesial untuk pacar saya. Jaga tone-nya tetap hangat dan positif.
 Bahasa aplikasi: Bahasa Indonesia.
-Harus support Huawei Watch dengan baik.
+Harus support smartwatch yang sinkron ke Health Connect (termasuk Huawei Band via bridge "Health Sync").
 
 
 Mau saya tambahkan bagian lain? Misalnya:

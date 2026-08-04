@@ -1,6 +1,6 @@
 # Progress & Task List
 
-Terakhir diperbarui: 3 Agustus 2026
+Terakhir diperbarui: 5 Agustus 2026
 
 ## Status Saat Ini
 
@@ -44,24 +44,21 @@ Terakhir diperbarui: 3 Agustus 2026
 - ✅ Mengubah warna kaku (`Colors.white` dan `AppColors.textPrimary`) di semua halaman menjadi adaptif terhadap `Theme.of(context)`.
 - ✅ Bottom navigation bar melengkung dengan efek bayangan (shadow) premium.
 
-**Fase 5 (Huawei Band / HMS Health Kit) 🔄 KODE SIAP — menunggu konfigurasi AGC dari user**
-- ✅ `HuaweiHealthService` diperluas: `refreshSignInState()` (restore sesi tanpa layar login), `signOut()` (flag opt-out), `fetchLatestHeartRate()` (via `readLatestData`).
-- ✅ Provider baru `huaweiHealthProvider` (sign-in/sign-out/sync, status terhubung) — `lib/providers/huawei_health_provider.dart`.
-- ✅ Fallback auto-sync di `metricsProvider`: Huawei primer → Health Connect sekunder.
-- ✅ HR real-time saat jogging via HMS (fallback Health Connect).
-- ✅ Dialog "Huawei Band" di Profil ditulis ulang memakai provider; menampilkan status setup AGC.
-- ✅ Konfigurasi build Android: plugin gradle `com.huawei.agconnect` 1.9.6.300 aktif otomatis saat `agconnect-services.json` ada; keep rules ProGuard; build tetap hijau tanpa file AGC.
-- ⏳ **MENUNGGU USER**: daftar AppGallery Connect, buat project AGC, daftar SHA-256 keystore, unduh `agconnect-services.json` → `android/app/`, install HMS Core + login Huawei ID di HP (lihat `docs/huawei_setup.md`), lalu verifikasi end-to-end.
+**Fase 5 (Huawei Band / HMS Health Kit) ❌ DIHAPUS (5 Agustus 2026)**
+- ❌ Integrasi Huawei Health Kit (HMS) dihapus total: `HuaweiHealthService`, `huaweiHealthProvider`, dialog "Huawei Watch" di Profil, dependensi `huawei_health`, plugin gradle AGC, `agconnect-services.json`, dan `docs/huawei_setup.md`.
+- ✅ Alasan: scope HR/sleep/real-time tertutup untuk developer individu (wajib enterprise), dan app Huawei Health tidak menulis ke Health Connect secara native.
+- ✅ **Jalur baru:** Google Health Connect satu-satunya sumber data. Data Huawei Band masuk lewat bridge pihak ketiga **"Health Sync"** (Huawei Health → Health Connect) yang diinstal di HP.
+- ✅ Setup di HP Fitri: aktifkan Cloud Huawei (Saya > Manajemen Privasi), install Health Sync, atur sumber Huawei Health → target Health Connect, izinkan akses.
+- ⚠️ Trade-off: HR saat jogging mengikuti ritme sinkron bridge (bukan streaming real-time); cakupan data via bridge partial (SpO2 tidak tersedia).
 
 ---
 
 ## Yang Belum Dikerjakan (Backlog)
 
-### Fase 5: Huawei Watch Integration (Prioritas Sedang)
-- [x] Integrasi SDK Huawei Health Kit di platform native Android (kode siap; menunggu setup AGC user).
-- [~] Sinkronisasi data tidur, HR, langkah, dan kalori dari jam tangan Huawei (kode siap; SpO2 = lanjutan opsional).
-- [x] Heart rate real-time saat olahraga (kode siap).
-- [ ] Verifikasi end-to-end di HP Xiaomi setelah `agconnect-services.json` tersedia.
+### Fase 5: Data Huawei Band via Health Connect Bridge ✅ (5 Agustus 2026)
+- [x] Integrasi Huawei Health Kit (HMS) dihapus dari kode (keputusan: jalur enterprise tidak diambil).
+- [x] Jalur data baru: Huawei Band → app Huawei Health → bridge "Health Sync" → Health Connect → aplikasi.
+- [ ] Verifikasi end-to-end di HP Fitri setelah Health Sync diinstal & data band masuk ke Health Connect.
 
 ### Fase 6: AI Assistant (OpenRouter) (Prioritas Sedang)
 - [ ] Hubungkan HTTP client Dio ke OpenRouter API.

@@ -8,7 +8,6 @@ import 'screens/profile_screen.dart';
 import 'providers/health_connect_provider.dart';
 import 'screens/ai_chat_screen.dart';
 import 'services/health_service.dart';
-import 'services/huawei_health_service.dart';
 import 'services/notification_service.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,10 +20,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveService.init();
   await HealthService.init();
-  await HuaweiHealthService.init();
-  // Probe ulang status sign-in HMS — sesi Huawei ID di-restore otomatis tanpa
-  // menampilkan layar login lagi (no-op bila HMS/AGC belum dikonfigurasi).
-  await HuaweiHealthService.refreshSignInState();
   await NotificationService.init();
   await NotificationService.requestPermission();
 

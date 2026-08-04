@@ -14,8 +14,6 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        // Repo resmi plugin & SDK HMS Core (integrasi Huawei Health Kit, Phase 5)
-        maven { url = uri("https://developer.huawei.com/repo/") }
     }
 }
 
