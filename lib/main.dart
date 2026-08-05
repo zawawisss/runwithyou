@@ -9,6 +9,7 @@ import 'providers/health_connect_provider.dart';
 import 'screens/ai_chat_screen.dart';
 import 'services/health_service.dart';
 import 'services/notification_service.dart';
+import 'services/openai_service.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -22,6 +23,9 @@ void main() async {
   // Muat konfigurasi AI dari .env (opsional — kalau file tidak ada, tetap jalan).
   await dotenv.load(isOptional: true);
   await HiveService.init();
+  // Muat konfigurasi AI (Hive → .env → default) sebelum UI tampil, supaya
+  // AI chat sudah siap meski user belum pernah membuka tab Profil.
+  OpenAiService.loadConfig();
   await HealthService.init();
   await NotificationService.init();
   await NotificationService.requestPermission();

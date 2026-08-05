@@ -50,3 +50,6 @@ app.*.map.json
 .env
 .claude/
 .openclaude/
+
+# Playwright MCP tool output
+.playwright-mcp/

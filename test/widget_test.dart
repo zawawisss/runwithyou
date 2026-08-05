@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +44,12 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.byType(RunWithYouApp), findsOneWidget);
+
+    // Lepas widget tree supaya ProviderScope di-dispose → Timer.periodic
+    // milik metricsProvider di-cancel via ref.onDispose (menghindari error
+    // "A Timer is still pending" saat test selesai).
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
 
     // Clean up
     await Hive.close();

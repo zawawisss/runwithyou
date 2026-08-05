@@ -13,7 +13,9 @@ class AiConfigState {
     required this.apiKey,
   });
 
-  bool get isConfigured => baseUrl.isNotEmpty && apiKey.isNotEmpty;
+  // Cukup API key — base URL & model punya default kode/`.env` dan divalidasi
+  // lagi di `OpenAiService.chat()` dengan pesan error yang jelas.
+  bool get isConfigured => OpenAiService.isConfigured;
 }
 
 class AiConfigNotifier extends Notifier<AiConfigState> {

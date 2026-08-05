@@ -7,7 +7,15 @@ import 'hive_service.dart';
 /// Sumber konfigurasi, prioritas tertinggi dulu:
 ///   1. Simpanan in-app (Hive) — diisi lewat Profil > Asisten AI
 ///   2. File `.env` (flutter_dotenv) — `OPENAI_BASE_URL`, `OPENAI_MODEL`, `OPENAI_API_KEY`
+///   3. Default kode di bawah (Gemini AI Studio) — cukup isi API key saja
 class OpenAiService {
+  // Default project: endpoint OpenAI-compatible Gemini AI Studio + model free
+  // dengan limit terbesar. Dipakai kalau base URL/model belum diisi di Hive
+  // maupun .env; pengaturan lewat Profil > Asisten AI tetap menang.
+  static const _defaultBaseUrl =
+      'https://generativelanguage.googleapis.com/v1beta/openai';
+  static const _defaultModel = 'gemini-3.5-flash-lite';
+
   static String? _baseUrl;
   static String? _model;
   static String? _apiKey;
@@ -16,15 +24,18 @@ class OpenAiService {
   static String get model => _model ?? '';
   static String? get apiKey => _apiKey;
 
-  /// Muat konfigurasi (Hive → .env) ke runtime. Dipanggil oleh `aiConfigProvider`.
+  /// Muat konfigurasi (Hive → .env → default kode) ke runtime.
+  /// Dipanggil di `main()` saat startup dan oleh `aiConfigProvider`.
   static void loadConfig() {
     _baseUrl = _firstNonEmpty(
       HiveService.getAiBaseUrl(),
       _env('OPENAI_BASE_URL'),
+      _defaultBaseUrl,
     );
     _model = _firstNonEmpty(
       HiveService.getAiModel(),
       _env('OPENAI_MODEL'),
+      _defaultModel,
     );
     _apiKey = _firstNonEmpty(
       HiveService.getAiApiKey(),
@@ -47,10 +58,11 @@ class OpenAiService {
   // nanti di-cek saat chat dipanggil).
   static bool get isConfigured => _apiKey != null && _apiKey!.isNotEmpty;
 
-  /// Ambil nilai non-empty pertama (null kalau semua kosong/null).
-  static String? _firstNonEmpty(String? a, String? b) {
-    if (a != null && a.isNotEmpty) return a;
-    if (b != null && b.isNotEmpty) return b;
+  /// Ambil nilai non-empty pertama dari daftar prioritas (null kalau semua kosong).
+  static String? _firstNonEmpty([String? a, String? b, String? c]) {
+    for (final v in [a, b, c]) {
+      if (v != null && v.isNotEmpty) return v;
+    }
     return null;
   }
 
@@ -96,7 +108,13 @@ class OpenAiService {
     }
 
     try {
-      final response = await Dio().post(
+      // Timeout penting — tanpanya UI bisa freeze saat API hang (mirip audit M3).
+      final response = await Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 20),
+          receiveTimeout: const Duration(seconds: 60),
+        ),
+      ).post(
         '$resolvedBaseUrl/chat/completions',
         options: Options(
           headers: {
