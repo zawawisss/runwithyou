@@ -293,6 +293,37 @@ class HiveService {
     return box.get('nvidia_api_key') as String?;
   }
 
+  // --- OPENAI-COMPATIBLE AI CONFIG (base URL, model, API key) ---
+  static Future<void> saveAiBaseUrl(String url) async {
+    final box = Hive.box(_settingsBoxName);
+    await box.put('ai_base_url', url);
+  }
+
+  static String? getAiBaseUrl() {
+    final box = Hive.box(_settingsBoxName);
+    return box.get('ai_base_url') as String?;
+  }
+
+  static Future<void> saveAiModel(String model) async {
+    final box = Hive.box(_settingsBoxName);
+    await box.put('ai_model', model);
+  }
+
+  static String? getAiModel() {
+    final box = Hive.box(_settingsBoxName);
+    return box.get('ai_model') as String?;
+  }
+
+  static Future<void> saveAiApiKey(String key) async {
+    final box = Hive.box(_settingsBoxName);
+    await box.put('ai_api_key', key);
+  }
+
+  static String? getAiApiKey() {
+    final box = Hive.box(_settingsBoxName);
+    return box.get('ai_api_key') as String?;
+  }
+
   // --- DIAGNOSTICS LOGS ---
   static Future<void> saveDiagnosticsLog(String log) async {
     final box = Hive.box(_settingsBoxName);

@@ -39,6 +39,7 @@ dependencies:
   hive_flutter: ^1.1.0
   fl_chart: ^1.2.0
   dio: ^5.10.0
+  flutter_dotenv: ^5.2.1
   go_router: ^17.3.0
   package_info_plus: ^8.0.0
   geolocator: ^14.0.2
@@ -68,6 +69,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  # Konfigurasi AI (base URL, model, API key) dibaca dari file .env.
+  # Salin .env.example ke .env lalu isi nilainya — .env JANGAN di-commit.
+  assets:
+    - .env
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -11,6 +11,7 @@ import 'services/health_service.dart';
 import 'services/notification_service.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/hive_service.dart';
 
 import 'providers/theme_provider.dart';
@@ -18,6 +19,8 @@ import 'providers/tab_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Muat konfigurasi AI dari .env (opsional — kalau file tidak ada, tetap jalan).
+  await dotenv.load(isOptional: true);
   await HiveService.init();
   await HealthService.init();
   await NotificationService.init();

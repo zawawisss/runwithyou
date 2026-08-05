@@ -4,6 +4,7 @@ import '../utils/theme.dart';
 import '../providers/theme_provider.dart';
 import '../providers/profile_provider.dart';
 import '../providers/health_connect_provider.dart';
+import '../providers/ai_config_provider.dart';
 import '../services/health_service.dart';
 import '../services/hive_service.dart';
 
@@ -101,6 +102,21 @@ class ProfileScreen extends ConsumerWidget {
                 trailing: _buildHealthSyncIndicator(ref),
                 onTap: () {
                   _showHealthConnectDialog(context, ref);
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildSettingsSection(
+            context,
+            children: [
+              _buildSettingsItem(
+                context,
+                icon: Icons.smart_toy_outlined,
+                title: 'Asisten AI',
+                trailing: _buildAiConfigStatus(context, ref),
+                onTap: () {
+                  _showAiConfigDialog(context, ref);
                 },
               ),
             ],
@@ -254,6 +270,205 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAiConfigStatus(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(aiConfigProvider);
+    if (config.isConfigured) {
+      return const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Tersimpan',
+            style: TextStyle(fontSize: 14, color: AppColors.accent),
+          ),
+          SizedBox(width: 4),
+          Icon(Icons.check_circle, size: 16, color: AppColors.accent),
+        ],
+      );
+    }
+    return const Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Belum diatur',
+          style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+        ),
+        SizedBox(width: 4),
+        Icon(Icons.chevron_right, color: AppColors.textSecondary, size: 20),
+      ],
+    );
+  }
+
+  InputDecoration _aiInputDecoration({
+    required String label,
+    required String hint,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+      ),
+    );
+  }
+
+  void _showAiConfigDialog(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final config = ref.read(aiConfigProvider);
+
+    final baseUrlController = TextEditingController(text: config.baseUrl);
+    final modelController = TextEditingController(text: config.model);
+    final apiKeyController = TextEditingController(text: config.apiKey);
+    var obscureKey = true;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Container(
+              padding: EdgeInsets.fromLTRB(
+                  16, 20, 16, 16 + MediaQuery.of(context).viewInsets.bottom),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.grey[700] : Colors.grey[300],
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Konfigurasi Asisten AI',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Pakai endpoint OpenAI-compatible (OpenRouter, OpenAI, '
+                      'Groq, Ollama, dll). Key disimpan lokal di perangkat.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.4,
+                        color: isDark
+                            ? Colors.grey[400]
+                            : AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: baseUrlController,
+                      keyboardType: TextInputType.url,
+                      autocorrect: false,
+                      decoration: _aiInputDecoration(
+                        label: 'Base URL',
+                        hint: 'https://openrouter.ai/api/v1',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: modelController,
+                      autocorrect: false,
+                      decoration: _aiInputDecoration(
+                        label: 'Model (opsional)',
+                        hint: 'contoh: meta-llama/llama-3.1-70b-instruct',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: apiKeyController,
+                      obscureText: obscureKey,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      decoration: _aiInputDecoration(
+                        label: 'API Key',
+                        hint: 'sk-...',
+                      ).copyWith(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            obscureKey
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: AppColors.textSecondary,
+                          ),
+                          onPressed: () {
+                            setDialogState(() => obscureKey = !obscureKey);
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            await ref
+                                .read(aiConfigProvider.notifier)
+                                .saveConfig(
+                                  baseUrl: baseUrlController.text,
+                                  model: modelController.text,
+                                  apiKey: apiKeyController.text,
+                                );
+                            if (!context.mounted) return;
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Konfigurasi AI tersimpan ✅'),
+                              ),
+                            );
+                          } catch (e) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Simpan',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

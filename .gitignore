@@ -47,5 +47,6 @@ app.*.map.json
 # Secrets & local-only (jangan pernah di-commit)
 **/key.properties
 **/agconnect-services.json
+.env
 .claude/
 .openclaude/
