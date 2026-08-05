@@ -58,6 +58,7 @@ Terakhir diperbarui: 5 Agustus 2026
 ### Fase 5: Data Huawei Band via Health Connect Bridge ✅ (5 Agustus 2026)
 - [x] Integrasi Huawei Health Kit (HMS) dihapus dari kode (keputusan: jalur enterprise tidak diambil).
 - [x] Jalur data baru: Huawei Band → app Huawei Health → bridge "Health Sync" → Health Connect → aplikasi.
+- [x] **Gate "Fitur Kesehatan — Segera Hadir"**: selama metrik harian belum berisi data nyata (`DailyMetricsModel.hasAnyHealthData` == false), Dashboard (Ringkasan Hari Ini) dan Progress (grafik mingguan) menampilkan kartu "Segera Hadir" dengan tombol ke tab Profil, dan jogging menampilkan "—" untuk HR/kalori yang belum tersedia. Setelah data Health Connect pertama masuk, UI nyata muncul otomatis tanpa perlu toggle.
 - [ ] Verifikasi end-to-end di HP Fitri setelah Health Sync diinstal & data band masuk ke Health Connect.
 
 ### Fase 6: AI Assistant (OpenRouter) (Prioritas Sedang)

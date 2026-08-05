@@ -173,12 +173,12 @@ class _JoggingScreenState extends ConsumerState<JoggingScreen> {
             children: [
               _buildActiveMetric(
                 label: 'KALORI (KCAL)',
-                value: (session.calories ?? 0).toString(),
+                value: session.calories != null ? session.calories.toString() : '—',
                 color: AppColors.warning,
               ),
               _buildActiveMetric(
                 label: 'HEART RATE (BPM)',
-                value: (session.currentHeartRate ?? 0).toString(),
+                value: session.currentHeartRate != null ? session.currentHeartRate.toString() : '—',
                 color: const Color(0xFFE74C3C),
                 showPulse: session.currentHeartRate != null && session.currentHeartRate! > 0 && !session.isPaused,
               ),

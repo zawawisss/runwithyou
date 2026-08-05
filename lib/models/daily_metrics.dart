@@ -13,6 +13,15 @@ class DailyMetricsModel {
     required this.date,
   });
 
+  /// true saat ada setidaknya satu data kesehatan nyata (bukan nol/null).
+  /// Dipakai untuk menampilkan placeholder "Fitur Kesehatan — Segera Hadir"
+  /// selama Health Connect belum terkirim data (via bridge Health Sync).
+  bool get hasAnyHealthData =>
+      steps != null ||
+      calories != null ||
+      averageHeartRate != null ||
+      sleepHours != null;
+
   DailyMetricsModel copyWith({
     double? sleepHours,
     int? steps,

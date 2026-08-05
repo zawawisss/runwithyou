@@ -10,6 +10,7 @@ import '../providers/profile_provider.dart';
 import '../providers/notes_provider.dart';
 import '../models/note.dart';
 import '../services/health_service.dart';
+import '../widgets/health_coming_soon_card.dart';
 
 const Map<int, IconData> _iconCache = {
   0xe5d2: Icons.school,
@@ -197,49 +198,52 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              _buildSummaryCard(
-                icon: Icons.directions_walk,
-                label: 'Langkah',
-                value: '${metrics.steps ?? 0}',
-                color: AppColors.accent,
-                context: context,
-                onTap: () => _showMetricDetail(context, 'steps', 'Langkah', Icons.directions_walk, AppColors.accent, (v) => '${v.toInt()} langkah'),
-              ),
-              const SizedBox(width: 12),
-              _buildSummaryCard(
-                icon: Icons.local_fire_department,
-                label: 'Kalori',
-                value: '${metrics.calories ?? 0} kcal',
-                color: AppColors.warning,
-                context: context,
-                onTap: () => _showMetricDetail(context, 'calories', 'Kalori', Icons.local_fire_department, AppColors.warning, (v) => '${v.toInt()} kcal'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              _buildSummaryCard(
-                icon: Icons.favorite,
-                label: 'Heart Rate',
-                value: '${metrics.averageHeartRate ?? 0} bpm',
-                color: AppColors.primary,
-                context: context,
-                onTap: () => _showMetricDetail(context, 'heartRate', 'Heart Rate', Icons.favorite, AppColors.primary, (v) => '${v.toInt()} bpm'),
-              ),
-              const SizedBox(width: 12),
-              _buildSummaryCard(
-                icon: Icons.bedtime,
-                label: 'Sleep',
-                value: '${(metrics.sleepHours ?? 0).toStringAsFixed(1)} jam',
-                color: const Color(0xFF9B59B6),
-                context: context,
-                onTap: () => _showMetricDetail(context, 'sleep', 'Sleep', Icons.bedtime, const Color(0xFF9B59B6), (v) => '${v.toStringAsFixed(1)} jam'),
-              ),
-            ],
-          ),
+          if (metrics.hasAnyHealthData) ...[
+            Row(
+              children: [
+                _buildSummaryCard(
+                  icon: Icons.directions_walk,
+                  label: 'Langkah',
+                  value: '${metrics.steps ?? 0}',
+                  color: AppColors.accent,
+                  context: context,
+                  onTap: () => _showMetricDetail(context, 'steps', 'Langkah', Icons.directions_walk, AppColors.accent, (v) => '${v.toInt()} langkah'),
+                ),
+                const SizedBox(width: 12),
+                _buildSummaryCard(
+                  icon: Icons.local_fire_department,
+                  label: 'Kalori',
+                  value: '${metrics.calories ?? 0} kcal',
+                  color: AppColors.warning,
+                  context: context,
+                  onTap: () => _showMetricDetail(context, 'calories', 'Kalori', Icons.local_fire_department, AppColors.warning, (v) => '${v.toInt()} kcal'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                _buildSummaryCard(
+                  icon: Icons.favorite,
+                  label: 'Heart Rate',
+                  value: '${metrics.averageHeartRate ?? 0} bpm',
+                  color: AppColors.primary,
+                  context: context,
+                  onTap: () => _showMetricDetail(context, 'heartRate', 'Heart Rate', Icons.favorite, AppColors.primary, (v) => '${v.toInt()} bpm'),
+                ),
+                const SizedBox(width: 12),
+                _buildSummaryCard(
+                  icon: Icons.bedtime,
+                  label: 'Sleep',
+                  value: '${(metrics.sleepHours ?? 0).toStringAsFixed(1)} jam',
+                  color: const Color(0xFF9B59B6),
+                  context: context,
+                  onTap: () => _showMetricDetail(context, 'sleep', 'Sleep', Icons.bedtime, const Color(0xFF9B59B6), (v) => '${v.toStringAsFixed(1)} jam'),
+                ),
+              ],
+            ),
+          ] else
+            const HealthComingSoonCard(),
           const SizedBox(height: 24),
 
           // Quick Actions
@@ -276,7 +280,9 @@ class DashboardScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 24),
 
-          // Health Connect Sync Status
+          // Health Connect Sync Status — disembunyikan saat placeholder
+          // "Fitur Kesehatan — Segera Hadir" sudah tampil di Ringkasan.
+          if (metrics.hasAnyHealthData)
           Consumer(
             builder: (context, ref, _) {
               final healthState = ref.watch(healthConnectProvider);

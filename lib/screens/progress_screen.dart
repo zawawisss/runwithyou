@@ -6,6 +6,7 @@ import '../providers/workout_provider.dart';
 import '../providers/profile_provider.dart';
 import '../services/hive_service.dart';
 import '../services/health_service.dart';
+import '../widgets/health_coming_soon_card.dart';
 import '../models/daily_metrics.dart';
 import '../models/workout.dart';
 
@@ -353,6 +354,7 @@ class _ProgressScreenState extends ConsumerState<ProgressScreen> {
               ),
             ),
             const SizedBox(height: 12),
+            if (weeklyMetrics.any((m) => m.hasAnyHealthData))
             Container(
               width: double.infinity,
               height: 240,
@@ -420,7 +422,9 @@ class _ProgressScreenState extends ConsumerState<ProgressScreen> {
                   barGroups: barGroups,
                 ),
               ),
-            ),
+            )
+            else
+              const HealthComingSoonCard(),
             const SizedBox(height: 24),
 
             // Detailed Stats Grid
